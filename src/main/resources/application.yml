@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: robert-ui
+
+vaadin:
+  launch-browser: true
+  allowed-packages: com.vaadin,org.vaadin
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: local
+
+server:
+  port: 8081
