@@ -50,3 +50,4 @@ src/main/frontend
 tsconfig.json
 types.d.ts
 node_modules
+vite.*

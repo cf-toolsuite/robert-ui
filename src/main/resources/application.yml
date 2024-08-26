@@ -2,6 +2,10 @@ spring:
   application:
     name: robert-ui
 
+  threads:
+    virtual:
+      enabled: true
+
 vaadin:
   launch-browser: true
   allowed-packages: com.vaadin,org.vaadin
