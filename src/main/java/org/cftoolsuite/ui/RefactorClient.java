@@ -1,5 +1,6 @@
 package org.cftoolsuite.ui;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.service.annotation.HttpExchange;
 import org.springframework.web.service.annotation.PostExchange;
@@ -8,5 +9,5 @@ import org.springframework.web.service.annotation.PostExchange;
 public interface RefactorClient {
 
     @PostExchange
-    void refactor(@RequestBody GitRequest request);
+    ResponseEntity<GitResponse> refactor(@RequestBody GitRequest request);
 }
