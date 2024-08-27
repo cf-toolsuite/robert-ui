@@ -13,12 +13,14 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.StreamResource;
 
 @Route("")
 public class RefactorView extends VerticalLayout {
@@ -42,6 +44,8 @@ public class RefactorView extends VerticalLayout {
 
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
+
+        add(getLogoImage());
 
         add(
             uriField,
@@ -125,5 +129,13 @@ public class RefactorView extends VerticalLayout {
                 .map(String::trim)
                 .filter(s -> !s.isEmpty())
                 .collect(Collectors.toSet());
+    }
+
+    private Image getLogoImage() {
+        StreamResource imageResource = new StreamResource("robert.png",
+            () -> getClass().getResourceAsStream("/static/robert.png"));
+        Image logo = new Image(imageResource, "Logo");
+        logo.setWidth("200px"); // Set the width as needed
+        return logo;
     }
 }

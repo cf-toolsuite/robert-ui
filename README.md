@@ -9,3 +9,5 @@ Companion UI for [R*bert](https://github.com/cf-toolsuite/robert)
   * [Clone](docs/CLONING.md)
   * [Build](docs/BUILD.md)
   * [Run](docs/RUN.md)
+
+![R*bert logo](src/main/resources/static/robert.png)
