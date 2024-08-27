@@ -49,7 +49,7 @@ public class RefactorView extends VerticalLayout {
     }
 
     private void submitRefactorRequest() {
-        GitRequest settings = new GitRequest(
+        GitRequest request = new GitRequest(
             uriField.getValue(),
             baseField.getValue(),
             usernameField.getValue(),
@@ -61,7 +61,7 @@ public class RefactorView extends VerticalLayout {
         );
 
         try {
-            refactorClient.refactor(settings);
+            refactorClient.refactor(request);
             Notification.show("Refactor request submitted successfully", 3000, Notification.Position.TOP_CENTER);
         } catch (Exception ex) {
             Notification.show("Error submitting refactor request: " + ex.getMessage(), 3000, Notification.Position.TOP_CENTER);
