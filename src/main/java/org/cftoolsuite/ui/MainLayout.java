@@ -1,5 +1,6 @@
 package org.cftoolsuite.ui;
 
+import org.cftoolsuite.client.ModeClient;
 import org.cftoolsuite.ui.view.HomeView;
 import org.cftoolsuite.ui.view.IngestView;
 import org.cftoolsuite.ui.view.RefactorView;
@@ -22,18 +23,20 @@ public class MainLayout extends AppLayout {
 
     private static final long serialVersionUID = 1L;
 
-    public MainLayout() {
+    public MainLayout(ModeClient modeClient) {
     	Tab homeTab = createTab(VaadinIcon.HOME.create(), "Home", HomeView.class);
 
     	Accordion accordion = new Accordion();
 		accordion.setSizeFull();
 
     	Tabs actionTabs = createTabs();
-    	Tab ingestTab = createTab(VaadinIcon.PLUG.create(),"Ingest", IngestView.class);
+		if (modeClient.isAdvancedModeConfigured()) {
+    		Tab ingestTab = createTab(VaadinIcon.PLUG.create(),"Ingest", IngestView.class);
+			actionTabs.add(ingestTab);
+		}
     	Tab refactorTab = createTab(VaadinIcon.PLAY.create(), "Refactor", RefactorView.class);
-    	actionTabs.add(ingestTab, refactorTab);
+    	actionTabs.add(refactorTab);
     	accordion.add("Actions", actionTabs).addThemeVariants(DetailsVariant.REVERSE);
-
 
     	addToNavbar(true, homeTab, new DrawerToggle());
     	addToDrawer(accordion);

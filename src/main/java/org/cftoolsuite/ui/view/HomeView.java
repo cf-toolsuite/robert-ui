@@ -4,7 +4,6 @@ import org.cftoolsuite.client.ModeClient;
 import org.cftoolsuite.ui.MainLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.UI;
@@ -30,22 +29,11 @@ public class HomeView extends Div {
     protected void onAttach(AttachEvent attachEvent) {
         super.onAttach(attachEvent);
         log.trace("Navigated to ROOT... now redirecting!");
-        try {
-            ResponseEntity<String> response = modeClient.getMode();
-            if (response.getStatusCode().is2xxSuccessful()) {
-                String mode = response.getBody();
-                if (StringUtils.isNotBlank(mode) && mode.equalsIgnoreCase("advanced")) {
-                    UI.getCurrent().navigate(IngestView.class);
-                } else {
-                    UI.getCurrent().navigate(RefactorView.class);
-                }
-            } else {
-                log.warn("Could not determine mode.  Redirecting to RefactorView...");
-                UI.getCurrent().navigate(RefactorView.class);
-            }
-        } catch (Exception e) {
-            String errorMessage = "An unexpected error occurred: " + e.getMessage();
-            log.error("An unexpected error occurred", e);
+        String mode = modeClient.getMode();
+        if (StringUtils.isNotBlank(mode) && mode.equalsIgnoreCase("advanced")) {
+            UI.getCurrent().navigate(IngestView.class);
+        } else {
+            UI.getCurrent().navigate(RefactorView.class);
         }
-  }
+    }
 }

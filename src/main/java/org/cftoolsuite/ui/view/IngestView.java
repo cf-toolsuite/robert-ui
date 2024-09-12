@@ -1,17 +1,16 @@
 package org.cftoolsuite.ui.view;
 
-import com.vaadin.flow.component.notification.NotificationVariant;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
-
 import org.cftoolsuite.client.RefactorClient;
-import org.cftoolsuite.domain.GitRequest;
-import org.cftoolsuite.domain.LanguageExtensions;
+import org.cftoolsuite.domain.IngestRequest;
 import org.cftoolsuite.ui.MainLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+
+import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.Route;
 
 @PageTitle("robert-ui » Ingest")
 @Route(value = "ingest", layout = MainLayout.class)
@@ -32,26 +31,17 @@ public class IngestView extends BaseView {
         add(
             gitInfo,
             gitCredentials,
-            filePathsField,
-            allowedExtensionsComboBox,
             buttons
         );
     }
 
     @Override
     protected void submitRequest() {
-        LanguageExtensions selectedLanguage = allowedExtensionsComboBox.getValue();
-        String allowedExtensions = selectedLanguage != null ? selectedLanguage.extensions() : "";
-        GitRequest request = new GitRequest(
+        IngestRequest request = new IngestRequest(
             uriField.getValue(),
-            null,
             usernameField.getValue(),
             passwordField.getValue(),
-            null,
-            convertToSet(filePathsField.getValue()),
-            convertToSet(allowedExtensions),
-            false,
-            false
+            commitField.getValue()
         );
 
         try {
@@ -75,11 +65,9 @@ public class IngestView extends BaseView {
     @Override
     protected void clearAllFields() {
         uriField.clear();
+        commitField.clear();
         usernameField.clear();
         passwordField.clear();
-        commitField.clear();
-        filePathsField.clear();
-        allowedExtensionsComboBox.clear();
     }
 
     @Override
@@ -88,6 +76,5 @@ public class IngestView extends BaseView {
         commitField.setWidth("100px");
         usernameField.setWidth("175px");
         passwordField.setWidth("175px");
-        filePathsField.setWidth("360px");
     }
 }
