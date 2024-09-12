@@ -1,4 +1,4 @@
-package org.cftoolsuite.ui;
+package org.cftoolsuite.domain;
 
 public record LanguageExtensions(String language, String extensions) {
     @Override

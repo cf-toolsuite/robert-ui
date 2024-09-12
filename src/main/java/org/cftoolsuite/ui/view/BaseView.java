@@ -1,0 +1,125 @@
+package org.cftoolsuite.ui.view;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.cftoolsuite.client.RefactorClient;
+import org.cftoolsuite.domain.LanguageExtensions;
+
+import com.vaadin.flow.component.Key;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.PasswordField;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.server.StreamResource;
+
+public abstract class BaseView extends VerticalLayout {
+
+    protected final TextField uriField = new TextField("URI");
+    protected final TextField baseField = new TextField("Base");
+    protected final TextField usernameField = new TextField("Username");
+    protected final PasswordField passwordField = new PasswordField("Password");
+    protected final TextField commitField = new TextField("Commit");
+    protected final TextField filePathsField = new TextField("File Paths");
+    protected final ComboBox<LanguageExtensions> allowedExtensionsComboBox = new ComboBox<>();
+    protected final Button submitButton = new Button("Submit");
+    protected final Button clearButton = new Button("Clear");
+    protected final HorizontalLayout buttons = new HorizontalLayout();
+
+    protected final RefactorClient refactorClient;
+
+    public BaseView(RefactorClient refactorClient) {
+        this.refactorClient = refactorClient;
+
+        autoSizeFields();
+
+        uriField.setHelperText("The URI of a Git repository");
+        usernameField.setHelperText("Username");
+        passwordField.setHelperText("Password (or Personal Access Token)");
+        commitField.setHelperText("The commit hash upon which to initiate a refactor request");
+        filePathsField.setHelperText("Comma separated list of file paths");
+
+        setAlignItems(Alignment.CENTER);
+        setJustifyContentMode(JustifyContentMode.CENTER);
+        buttons.setAlignItems(Alignment.CENTER);
+        buttons.setJustifyContentMode(JustifyContentMode.CENTER);
+
+        add(getLogoImage());
+
+        uriField.setRequired(true);
+        filePathsField.setRequired(true);
+
+        initializeAllowedExtensionsComboBox();
+
+        submitButton.addClickListener(e -> submitRequest());
+        clearButton.addClickListener(e -> clearAllFields());
+    }
+
+
+    protected void initializeAllowedExtensionsComboBox() {
+        List<LanguageExtensions> items = refactorClient.languageExtensions().getBody();
+        allowedExtensionsComboBox.setLabel("Allowed Extensions");
+        allowedExtensionsComboBox.setItems(items);
+        allowedExtensionsComboBox.setItemLabelGenerator(LanguageExtensions::language);
+        allowedExtensionsComboBox.setHelperText("Select language");
+        allowedExtensionsComboBox.setClearButtonVisible(true);
+        allowedExtensionsComboBox.setWidth("auto");
+    }
+
+    protected abstract void autoSizeFields();
+
+    protected abstract void submitRequest();
+
+    protected abstract void clearAllFields();
+
+    protected void showNotification(String message, NotificationVariant variant) {
+        Notification notification = new Notification(message);
+        notification.setPosition(Notification.Position.TOP_CENTER);
+        notification.setDuration(0);
+        notification.addThemeVariants(variant);
+
+        Div content = new Div();
+        content.setText(message);
+        content.getStyle().set("cursor", "pointer");
+        content.addClickListener(event -> notification.close());
+
+        notification.add(content);
+
+        UI.getCurrent().addShortcutListener(
+            () -> notification.close(),
+            Key.ESCAPE
+        );
+
+        notification.open();
+
+        notification.addDetachListener(event ->
+            UI.getCurrent().getPage().executeJs(
+                "window.Vaadin.Flow.notificationEscListener.remove()"
+            )
+        );
+    }
+
+    protected Set<String> convertToSet(String commaSeparatedString) {
+        return Arrays.stream(commaSeparatedString.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.toSet());
+    }
+
+    private Image getLogoImage() {
+        StreamResource imageResource = new StreamResource("robert.png",
+            () -> getClass().getResourceAsStream("/static/robert.png"));
+        Image logo = new Image(imageResource, "Logo");
+        logo.setWidth("360px");
+        return logo;
+    }
+}

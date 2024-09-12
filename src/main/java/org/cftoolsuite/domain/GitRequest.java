@@ -1,4 +1,4 @@
-package org.cftoolsuite.ui;
+package org.cftoolsuite.domain;
 
 import java.util.HashSet;
 import java.util.Set;

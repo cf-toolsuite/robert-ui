@@ -11,7 +11,7 @@ import com.vaadin.flow.theme.lumo.Lumo;
 
 @SpringBootApplication
 @ConfigurationPropertiesScan
-@Theme(themeClass = Lumo.class, variant = Lumo.LIGHT)
+@Theme(themeClass = Lumo.class, variant = Lumo.DARK)
 @PWA(name = "A simple user interface to interact with a robert instance", shortName = "robert-ui")
 public class RobertUiApplication implements AppShellConfigurator {
 
