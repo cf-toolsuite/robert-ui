@@ -1,6 +1,7 @@
 package org.cftoolsuite.ui;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -17,6 +18,7 @@ import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
@@ -33,19 +35,26 @@ public class RefactorView extends VerticalLayout {
     private final PasswordField passwordField = new PasswordField("Password");
     private final TextField commitField = new TextField("Commit");
     private final TextField filePathsField = new TextField("File Paths (comma-separated)");
+    private final Select<LanguageExtensions> allowedExtensionsSelect = new Select<>();
     private final Checkbox pushToRemoteEnabledCheckbox = new Checkbox("Activate Push to Remote?");
     private final Checkbox pullRequestEnabledCheckbox = new Checkbox("Activate Pull Request?");
     private final Button submitButton = new Button("Submit");
 
     private final RefactorClient refactorClient;
 
-    public RefactorView(RefactorClient refactorClient) {
+    public RefactorView(
+        RefactorClient refactorClient) {
         this.refactorClient = refactorClient;
 
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
 
         add(getLogoImage());
+
+        uriField.setRequired(true);
+        filePathsField.setRequired(true);
+
+        initializeAllowedExtensionsSelect();
 
         add(
             uriField,
@@ -54,6 +63,7 @@ public class RefactorView extends VerticalLayout {
             passwordField,
             commitField,
             filePathsField,
+            allowedExtensionsSelect,
             pushToRemoteEnabledCheckbox,
             pullRequestEnabledCheckbox,
             submitButton
@@ -62,7 +72,19 @@ public class RefactorView extends VerticalLayout {
         submitButton.addClickListener(e -> submitRefactorRequest());
     }
 
+
+    private void initializeAllowedExtensionsSelect() {
+        List<LanguageExtensions> items = refactorClient.languageExtensions().getBody();
+        log.info("Fetched language extensions: {}", items);
+        allowedExtensionsSelect.setLabel("Allowed Extensions");
+        allowedExtensionsSelect.setItems(items);
+        allowedExtensionsSelect.setItemLabelGenerator(LanguageExtensions::language);
+        allowedExtensionsSelect.setPlaceholder("Select language");
+    }
+
     private void submitRefactorRequest() {
+        LanguageExtensions selectedLanguage = allowedExtensionsSelect.getValue();
+        String allowedExtensions = selectedLanguage != null ? selectedLanguage.extensions() : "";
         GitRequest request = new GitRequest(
             uriField.getValue(),
             baseField.getValue(),
@@ -70,6 +92,7 @@ public class RefactorView extends VerticalLayout {
             passwordField.getValue(),
             commitField.getValue(),
             convertToSet(filePathsField.getValue()),
+            convertToSet(allowedExtensions),
             pushToRemoteEnabledCheckbox.getValue(),
             pullRequestEnabledCheckbox.getValue()
         );
@@ -135,7 +158,7 @@ public class RefactorView extends VerticalLayout {
         StreamResource imageResource = new StreamResource("robert.png",
             () -> getClass().getResourceAsStream("/static/robert.png"));
         Image logo = new Image(imageResource, "Logo");
-        logo.setWidth("200px"); // Set the width as needed
+        logo.setWidth("200px");
         return logo;
     }
 }

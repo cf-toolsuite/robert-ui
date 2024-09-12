@@ -6,6 +6,37 @@ spring:
     virtual:
       enabled: true
 
+management:
+  info:
+    build:
+      enabled: true
+    git:
+      mode: FULL
+    java:
+      enabled: true
+    os:
+      enabled: true
+  endpoint:
+    health:
+      show-details: ALWAYS
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+    env:
+      enabled: true
+      show-values: ALWAYS
+    configprops:
+      enabled: true
+      show-values: ALWAYS
+  endpoints:
+    web:
+      exposure:
+        include: info,health,metrics,scheduledtasks,loggers,prometheus,sbom
+  tracing:
+    sampling:
+      probability: 1.0
+
 vaadin:
   launch-browser: true
   allowed-packages: com.vaadin,org.vaadin
@@ -19,3 +50,18 @@ spring:
 
 server:
   port: 8081
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+debug: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
