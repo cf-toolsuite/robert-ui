@@ -36,7 +36,7 @@ public class RefactorView extends BaseView {
         boxes.add(pushToRemoteEnabledCheckbox, pullRequestEnabledCheckbox);
         buttons.add(submitButton, clearButton);
 
-        baseField.setHelperText("The name of the base branch (default: main)");
+        baseField.setHelperText("The name of the target branch for a pull request (default: main)");
 
         add(
             gitInfo,

@@ -45,8 +45,16 @@ public abstract class BaseView extends VerticalLayout {
         uriField.setHelperText("The URI of a Git repository");
         usernameField.setHelperText("Username");
         passwordField.setHelperText("Password (or Personal Access Token)");
-        commitField.setHelperText("The commit hash upon which to initiate a refactor request");
-        filePathsField.setHelperText("Comma separated list of file paths");
+        commitField.setHelperText("The commit hash upon which to execute this request (default: latest commit)");
+        filePathsField.setHelperText(
+            """
+            Comma separated list of file paths relative to the project root.
+            E.g. src/main/java/org/example/Example.java, src/test/java/org/example/AnotherExample.java.
+            When specified in this manner, each file path is explicitly considered, directory walking is not performed.
+            Alternatively, for Java projects, one can specify a list of dot-separated package names where each package is walked recursively.
+            E.g. org.example, org.example.sub.
+            If no file paths are specified, all files in all directories of the repository will be considered.
+            """);
 
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
