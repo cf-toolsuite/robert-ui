@@ -1,14 +1,18 @@
 package org.cftoolsuite.ui.view;
 
+import java.util.List;
+
 import org.cftoolsuite.client.ModeClient;
 import org.cftoolsuite.client.RefactorClient;
 import org.cftoolsuite.domain.IngestRequest;
+import org.cftoolsuite.domain.LanguageExtensions;
 import org.cftoolsuite.ui.MainLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -27,6 +31,7 @@ public class IngestView extends BaseView {
     private TextField usernameField;
     private PasswordField passwordField;
     private TextField commitField;
+    private ComboBox<LanguageExtensions> allowedExtensionsComboBox;
     private Button submitButton;
     private Button clearButton;
     private HorizontalLayout buttons;
@@ -41,6 +46,7 @@ public class IngestView extends BaseView {
         this.usernameField = new TextField("Username");
         this.passwordField = new PasswordField("Password");
         this.commitField = new TextField("Commit");
+        this.allowedExtensionsComboBox = new ComboBox<>();
         this.submitButton = new Button("Submit");
         this.clearButton = new Button("Clear");
         this.buttons = new HorizontalLayout();
@@ -60,6 +66,8 @@ public class IngestView extends BaseView {
 
         buttons.add(submitButton, clearButton);
 
+        initializeAllowedExtensionsComboBox();
+
         buttons.setAlignItems(Alignment.CENTER);
         buttons.setJustifyContentMode(JustifyContentMode.CENTER);
         submitButton.addClickListener(event -> submitRequest());
@@ -69,20 +77,35 @@ public class IngestView extends BaseView {
             new H2("Ingest"),
             gitInfo,
             gitCredentials,
+            allowedExtensionsComboBox,
             buttons
         );
 
         autoSizeFields();
     }
 
+    protected void initializeAllowedExtensionsComboBox() {
+        List<LanguageExtensions> items = refactorClient.languageExtensions().getBody();
+        allowedExtensionsComboBox.setLabel("Allowed Extensions");
+        allowedExtensionsComboBox.setItems(items);
+        allowedExtensionsComboBox.setItemLabelGenerator(LanguageExtensions::language);
+        allowedExtensionsComboBox.setPlaceholder("Select language");
+        allowedExtensionsComboBox.setHelperText("Files in repository must match these common language file extensions. Leave blank to ingest all files.");
+        allowedExtensionsComboBox.setClearButtonVisible(true);
+        allowedExtensionsComboBox.setWidth("auto");
+    }
+
     @Override
     protected void submitRequest() {
+        LanguageExtensions selectedLanguage = allowedExtensionsComboBox.getValue();
+        String allowedExtensions = selectedLanguage != null ? selectedLanguage.extensions() : "";
         IngestRequest request =
             new IngestRequest(
                 uriField.getValue(),
                 usernameField.getValue(),
                 passwordField.getValue(),
-                commitField.getValue()
+                commitField.getValue(),
+                convertToSet(allowedExtensions)
             );
 
         try {
@@ -107,6 +130,7 @@ public class IngestView extends BaseView {
     protected void clearAllFields() {
         uriField.clear();
         commitField.clear();
+        allowedExtensionsComboBox.clear();
         usernameField.clear();
         passwordField.clear();
     }

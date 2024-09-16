@@ -112,9 +112,12 @@ public class RefactorView extends BaseView {
         add(
             refactorPromptField,
             gitInfo,
-            gitCredentials,
-            filePathsField,
-            allowedExtensionsComboBox,
+            gitCredentials
+        );
+
+        if (!this.isAdvancedModeConfigured) { add(filePathsField); }
+
+        add(allowedExtensionsComboBox,
             boxes,
             baseField,
             buttons
@@ -145,7 +148,7 @@ public class RefactorView extends BaseView {
                 usernameField.getValue(),
                 passwordField.getValue(),
                 commitField.getValue(),
-                convertToSet(filePathsField.getValue()),
+                !this.isAdvancedModeConfigured ? convertToSet(filePathsField.getValue()): null,
                 convertToSet(allowedExtensions),
                 pushToRemoteEnabledCheckbox.getValue(),
                 pullRequestEnabledCheckbox.getValue(),
@@ -185,7 +188,7 @@ public class RefactorView extends BaseView {
         usernameField.clear();
         passwordField.clear();
         commitField.clear();
-        filePathsField.clear();
+        if (!this.isAdvancedModeConfigured) { filePathsField.clear(); }
         allowedExtensionsComboBox.clear();
         pushToRemoteEnabledCheckbox.clear();
         pullRequestEnabledCheckbox.clear();
@@ -198,7 +201,7 @@ public class RefactorView extends BaseView {
         commitField.setWidth("100px");
         usernameField.setWidth("175px");
         passwordField.setWidth("175px");
-        filePathsField.setWidth("360px");
+        if (!this.isAdvancedModeConfigured) { filePathsField.setWidth("360px"); }
         baseField.setWidth("100px");
     }
 }
