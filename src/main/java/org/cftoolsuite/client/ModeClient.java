@@ -18,7 +18,7 @@ public class ModeClient {
 
     private RestClient client;
 
-    public ModeClient(@Value("#{systemProperties['robertUrl'] ?: 'http://localhost:8080'}") String robertUrl) {
+    public ModeClient(@Value("${refactor.service.url}") String robertUrl) {
         client = RestClient.builder()
             .baseUrl(robertUrl)
             .build();
