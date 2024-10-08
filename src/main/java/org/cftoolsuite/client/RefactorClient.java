@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(name = "refactor-service", url = "${refactor.service.url}")
 public interface RefactorClient {
 
-    @PostMapping(value = "/ingest", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/ingest")
     ResponseEntity<Void> ingest(@RequestBody IngestRequest request);
 
-    @PostMapping(value = "/refactor" , produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/refactor")
     ResponseEntity<GitResponse> refactor(@RequestBody GitRequest request);
 
     @GetMapping(value = "/language-extensions", produces = MediaType.APPLICATION_JSON_VALUE)
