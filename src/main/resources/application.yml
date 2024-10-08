@@ -37,6 +37,20 @@ management:
     sampling:
       probability: 1.0
 
+refactor:
+  service:
+    scheme: ${REFACTOR_SERVICE_SCHEME:http}
+    host: ${REFACTOR_SERVICE_HOST:localhost}
+    port: ${REFACTOR_SERVICE_PORT:8080}
+    url: ${refactor.service.scheme}://${refactor.service.host}:${refactor.service.port}
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 10000
+
 vaadin:
   launch-browser: true
   allowed-packages: com.vaadin,org.vaadin
