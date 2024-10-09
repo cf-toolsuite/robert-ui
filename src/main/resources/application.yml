@@ -49,7 +49,7 @@ feign:
     config:
       default:
         connectTimeout: 5000
-        readTimeout: 10000
+        readTimeout: 180000
 
 vaadin:
   launch-browser: true
