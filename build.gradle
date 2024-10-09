@@ -29,7 +29,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
-	implementation 'io.github.openfeign:feign-hc5:13.4'
+	implementation 'io.github.openfeign:feign-hc5:13.5'
 	implementation 'com.vaadin:vaadin-spring-boot-starter'
 	implementation 'org.apache.commons:commons-lang3'
 	implementation 'io.pivotal.cfenv:java-cfenv-all:3.2.0'
