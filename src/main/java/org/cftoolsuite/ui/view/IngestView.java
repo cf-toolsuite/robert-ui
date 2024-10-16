@@ -1,6 +1,6 @@
 package org.cftoolsuite.ui.view;
 
-import java.util.List;
+import java.util.Set;
 
 import org.cftoolsuite.client.ModeClient;
 import org.cftoolsuite.client.RefactorClient;
@@ -85,7 +85,7 @@ public class IngestView extends BaseView {
     }
 
     protected void initializeAllowedExtensionsComboBox() {
-        List<LanguageExtensions> items = refactorClient.languageExtensions().getBody();
+        Set<LanguageExtensions> items = refactorClient.languageExtensions().getBody();
         allowedExtensionsComboBox.setLabel("Allowed Extensions");
         allowedExtensionsComboBox.setItems(items);
         allowedExtensionsComboBox.setItemLabelGenerator(LanguageExtensions::language);

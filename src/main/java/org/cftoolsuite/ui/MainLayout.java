@@ -4,6 +4,7 @@ import org.cftoolsuite.client.ModeClient;
 import org.cftoolsuite.ui.view.HomeView;
 import org.cftoolsuite.ui.view.IngestView;
 import org.cftoolsuite.ui.view.RefactorView;
+import org.cftoolsuite.ui.view.SearchView;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.accordion.Accordion;
@@ -33,6 +34,8 @@ public class MainLayout extends AppLayout {
 		if (modeClient.isAdvancedModeConfigured()) {
     		Tab ingestTab = createTab(VaadinIcon.PLUG.create(),"Ingest", IngestView.class);
 			actionTabs.add(ingestTab);
+			Tab searchTab = createTab(VaadinIcon.SEARCH.create(),"Search", SearchView.class);
+			actionTabs.add(searchTab);
 		}
     	Tab refactorTab = createTab(VaadinIcon.PLAY.create(), "Refactor", RefactorView.class);
     	actionTabs.add(refactorTab);

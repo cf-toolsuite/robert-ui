@@ -1,6 +1,6 @@
 package org.cftoolsuite.client;
 
-import java.util.List;
+import java.util.Set;
 
 import org.cftoolsuite.domain.GitRequest;
 import org.cftoolsuite.domain.GitResponse;
@@ -22,7 +22,13 @@ public interface RefactorClient {
     @PostMapping(value = "/refactor")
     ResponseEntity<GitResponse> refactor(@RequestBody GitRequest request);
 
+    @PostMapping("/fetch")
+    public ResponseEntity<String> fetch(@RequestBody GitRequest request);
+
+    @PostMapping("/search")
+    public ResponseEntity<GitResponse> search(@RequestBody GitRequest request);
+
     @GetMapping(value = "/language-extensions", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<List<LanguageExtensions>> languageExtensions();
+    ResponseEntity<Set<LanguageExtensions>> languageExtensions();
 
 }
