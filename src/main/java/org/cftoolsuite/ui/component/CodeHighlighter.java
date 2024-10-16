@@ -36,7 +36,7 @@ import com.vaadin.flow.component.dependency.StyleSheet;
 @JavaScript("https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/components/prism-sql.min.js")
 @JavaScript("https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/components/prism-vbnet.min.js")
 @JavaScript("https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/components/prism-yaml.min.js")
-@JavaScript("https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/components/prism-markup.min.js")
+@JavaScript("https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/components/prism-markdown.min.js")
 @JavaScript("https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/components/prism-groovy.min.js")
 @StyleSheet("https://cdnjs.cloudflare.com/ajax/libs/prism-themes/1.9.0/prism-nord.min.css")
 public class CodeHighlighter extends Html {
