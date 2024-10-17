@@ -10,6 +10,7 @@ import org.cftoolsuite.domain.GitResponse;
 import org.cftoolsuite.domain.LanguageExtensions;
 import org.cftoolsuite.ui.MainLayout;
 import org.cftoolsuite.ui.component.CodeHighlighter;
+import org.cftoolsuite.ui.component.CodeHighlighterFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -211,7 +212,7 @@ public class SearchView extends BaseView {
                     Paragraph text = new Paragraph(response.getBody());
                     contentWrapper.add(text);
                 } else {
-                    CodeHighlighter highlighter = new CodeHighlighter(response.getBody(), language);
+                    CodeHighlighter highlighter = CodeHighlighterFactory.createHighlighter(response.getBody(), language);
                     contentWrapper.add(highlighter);
                 }
 
