@@ -1,6 +1,6 @@
 plugins {
 	id 'java'
-	id 'com.vaadin' version '24.4.13'
+	id 'com.vaadin' version '24.5.0'
 	id 'org.cyclonedx.bom' version '1.10.0'
 	id 'com.gorylenko.gradle-git-properties' version '2.4.2'
 	id 'org.springframework.boot' version '3.3.4'
@@ -8,7 +8,6 @@ plugins {
 }
 
 group = 'org.cftoolsuite'
-version = '0.0.1-SNAPSHOT'
 
 java {
 	toolchain {
@@ -22,7 +21,7 @@ repositories {
 
 ext {
 	set('springCloudVersion', "2023.0.3")
-	set('vaadinVersion', "24.4.13")
+	set('vaadinVersion', "24.5.0")
 }
 
 dependencies {
@@ -52,4 +51,19 @@ tasks.named('test') {
 
 bootRun {
     systemProperties System.properties
+}
+
+task setVersion {
+    doLast {
+        def newVersion = project.hasProperty('newVersion') ? project.newVersion : version
+        ant.propertyfile(file: "gradle.properties") {
+            entry(key: "version", value: newVersion)
+        }
+    }
+}
+
+task printArtifactPath {
+    doLast {
+        println bootJar.archiveFile.get().asFile.absolutePath
+    }
 }
