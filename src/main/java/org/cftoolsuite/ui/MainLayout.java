@@ -1,6 +1,7 @@
 package org.cftoolsuite.ui;
 
 import org.cftoolsuite.client.ModeClient;
+import org.cftoolsuite.ui.view.ChatView;
 import org.cftoolsuite.ui.view.HomeView;
 import org.cftoolsuite.ui.view.IngestView;
 import org.cftoolsuite.ui.view.RefactorView;
@@ -34,6 +35,8 @@ public class MainLayout extends AppLayout {
 		if (modeClient.isAdvancedModeConfigured()) {
     		Tab ingestTab = createTab(VaadinIcon.PLUG.create(),"Ingest", IngestView.class);
 			actionTabs.add(ingestTab);
+			Tab chatTab = createTab(VaadinIcon.CHAT.create(),"Chat", ChatView.class);
+			actionTabs.add(chatTab);
 			Tab searchTab = createTab(VaadinIcon.SEARCH.create(),"Search", SearchView.class);
 			actionTabs.add(searchTab);
 		}

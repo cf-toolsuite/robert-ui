@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name = "refactor-service", url = "${refactor.service.url}")
 public interface RefactorClient {
@@ -19,10 +20,13 @@ public interface RefactorClient {
     @PostMapping(value = "/ingest")
     ResponseEntity<Void> ingest(@RequestBody IngestRequest request);
 
+    @GetMapping("/chat")
+    ResponseEntity<String> chat(@RequestParam("q") String message);
+
     @PostMapping(value = "/refactor")
     ResponseEntity<GitResponse> refactor(@RequestBody GitRequest request);
 
-    @PostMapping("/fetch")
+    @PostMapping(value = "/fetch", produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> fetch(@RequestBody GitRequest request);
 
     @PostMapping("/search")

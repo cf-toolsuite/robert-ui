@@ -82,13 +82,13 @@ public class RefactorView extends BaseView {
         usernameField.setHelperText("Username");
         passwordField.setHelperText("Password (or Personal Access Token)");
         commitField.setHelperText("The commit hash upon which to execute this request (default: latest commit)");
-        filePathsField.setHelperText(
+        filePathsField.setHelperText("""
+            Comma separated list of file paths relative to the project root.
+            Each file path is explicitly considered, directory walking is not performed.
+            Alternatively, for Java projects, one can specify a list of dot-separated package names where each package is walked recursively.
+            If no file paths are specified, all files in all directories of the repository will be considered.
             """
-                Comma separated list of file paths relative to the project root.
-                Each file path is explicitly considered, directory walking is not performed.
-                Alternatively, for Java projects, one can specify a list of dot-separated package names where each package is walked recursively.
-                If no file paths are specified, all files in all directories of the repository will be considered.
-                """);
+        );
         baseField.setHelperText("The name of the target branch for a pull request (default: main)");
         if (this.isAdvancedModeConfigured) {
             discoveryPromptField.setHelperText("This prompt should articulate what you want R*bert to discover in the codebase as candidates for refactoring");
