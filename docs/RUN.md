@@ -195,7 +195,7 @@ export KUBECONFIG=/path/to/.kube/config
 
 ### Prepare
 
-Consult GitHub CR for the latest available tagged image, [here](https://github.com/cf-toolsuite/robert-ui/pkgs/container/robert-ui).
+Consult GitHub CR for the latest available tagged image, [here](https://github.com/orgs/cf-toolsuite/packages/container/package/robert-ui).
 
 Edit the `build/classes/java/main/META-INF/jkube/kubernetes/robert-ui-deployment.yml` and `build/classes/java/main/META-INF/jkube/kubernetes/robert-ui-service.yml` files
 
