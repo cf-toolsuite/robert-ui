@@ -83,8 +83,6 @@ public class SearchView extends BaseView {
         this.allowedExtensions = refactorClient.languageExtensions().getBody();
         initializeAllowedExtensionsComboBox();
 
-        buttons.setAlignItems(Alignment.CENTER);
-        buttons.setJustifyContentMode(JustifyContentMode.CENTER);
         submitButton.addClickListener(event -> submitRequest());
         clearButton.addClickListener(event -> clearAllFields());
 

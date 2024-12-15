@@ -68,8 +68,6 @@ public class IngestView extends BaseView {
 
         initializeAllowedExtensionsComboBox();
 
-        buttons.setAlignItems(Alignment.CENTER);
-        buttons.setJustifyContentMode(JustifyContentMode.CENTER);
         submitButton.addClickListener(event -> submitRequest());
         clearButton.addClickListener(event -> clearAllFields());
 

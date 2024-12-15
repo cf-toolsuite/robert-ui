@@ -1,9 +1,9 @@
 plugins {
 	id 'java'
-	id 'com.vaadin' version '24.5.7'
+	id 'com.vaadin' version '24.5.8'
 	id 'org.cyclonedx.bom' version '1.10.0'
 	id 'com.gorylenko.gradle-git-properties' version '2.4.2'
-	id 'org.springframework.boot' version '3.3.5'
+	id 'org.springframework.boot' version '3.4.0'
 	id 'io.spring.dependency-management' version '1.1.6'
 	id 'org.eclipse.jkube.kubernetes' version '1.17.0'
 }
@@ -21,15 +21,17 @@ repositories {
 }
 
 ext {
-	set('springCloudVersion', "2023.0.3")
-	set('vaadinVersion', "24.5.4")
+	set('springCloudVersion', "2024.0.0")
+	set('vaadinVersion', "24.5.8")
 }
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+	implementation 'org.apache.commons:commons-collections4:4.4'
 	implementation 'io.github.openfeign:feign-hc5:13.5'
+	implementation 'com.playtika.reactivefeign:feign-reactor-spring-cloud-starter:4.2.1'
 	implementation 'com.vaadin:vaadin-spring-boot-starter'
 	implementation 'org.apache.commons:commons-lang3'
 	implementation 'org.commonmark:commonmark:0.24.0'

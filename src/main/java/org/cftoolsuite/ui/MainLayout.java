@@ -1,5 +1,7 @@
 package org.cftoolsuite.ui;
 
+import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.server.StreamResource;
 import org.cftoolsuite.client.ModeClient;
 import org.cftoolsuite.ui.view.ChatView;
 import org.cftoolsuite.ui.view.HomeView;
@@ -8,10 +10,8 @@ import org.cftoolsuite.ui.view.RefactorView;
 import org.cftoolsuite.ui.view.SearchView;
 
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
-import com.vaadin.flow.component.details.DetailsVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
@@ -28,9 +28,6 @@ public class MainLayout extends AppLayout {
     public MainLayout(ModeClient modeClient) {
     	Tab homeTab = createTab(VaadinIcon.HOME.create(), "Home", HomeView.class);
 
-    	Accordion accordion = new Accordion();
-		accordion.setSizeFull();
-
     	Tabs actionTabs = createTabs();
 		if (modeClient.isAdvancedModeConfigured()) {
     		Tab ingestTab = createTab(VaadinIcon.PLUG.create(),"Ingest", IngestView.class);
@@ -42,10 +39,9 @@ public class MainLayout extends AppLayout {
 		}
     	Tab refactorTab = createTab(VaadinIcon.PLAY.create(), "Refactor", RefactorView.class);
     	actionTabs.add(refactorTab);
-    	accordion.add("Actions", actionTabs).addThemeVariants(DetailsVariant.REVERSE);
 
     	addToNavbar(true, homeTab, new DrawerToggle());
-    	addToDrawer(accordion);
+    	addToDrawer(getLogoImage(), actionTabs);
     }
 
     private Tabs createTabs() {
@@ -71,5 +67,13 @@ public class MainLayout extends AppLayout {
 		tab.add(link);
 		return tab;
     }
+
+	private Image getLogoImage() {
+		StreamResource imageResource = new StreamResource("robert.png",
+				() -> getClass().getResourceAsStream("/static/robert.png"));
+		Image logo = new Image(imageResource, "Logo");
+		logo.setWidth("240px");
+		return logo;
+	}
 
 }

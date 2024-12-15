@@ -9,9 +9,11 @@ import com.vaadin.flow.component.page.AppShellConfigurator;
 import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
+import reactivefeign.spring.config.EnableReactiveFeignClients;
 
 @SpringBootApplication
 @EnableFeignClients
+@EnableReactiveFeignClients
 @ConfigurationPropertiesScan
 @Theme(themeClass = Lumo.class, variant = Lumo.DARK)
 @PWA(name = "A simple user interface to interact with a robert instance", shortName = "robert-ui")

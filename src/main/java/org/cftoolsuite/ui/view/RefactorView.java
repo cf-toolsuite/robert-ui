@@ -104,8 +104,6 @@ public class RefactorView extends BaseView {
 
         initializeAllowedExtensionsComboBox();
 
-        buttons.setAlignItems(Alignment.CENTER);
-        buttons.setJustifyContentMode(JustifyContentMode.CENTER);
         submitButton.addClickListener(e -> submitRequest());
         clearButton.addClickListener(e -> clearAllFields());
 

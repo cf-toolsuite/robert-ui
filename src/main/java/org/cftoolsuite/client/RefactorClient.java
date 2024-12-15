@@ -1,11 +1,13 @@
 package org.cftoolsuite.client;
 
+import java.util.Map;
 import java.util.Set;
 
 import org.cftoolsuite.domain.GitRequest;
 import org.cftoolsuite.domain.GitResponse;
 import org.cftoolsuite.domain.IngestRequest;
 import org.cftoolsuite.domain.LanguageExtensions;
+import org.cftoolsuite.domain.chat.Inquiry;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +22,8 @@ public interface RefactorClient {
     @PostMapping(value = "/ingest")
     ResponseEntity<Void> ingest(@RequestBody IngestRequest request);
 
-    @GetMapping("/chat")
-    ResponseEntity<String> chat(@RequestParam("q") String message);
+    @PostMapping("/api/chat")
+    public ResponseEntity<String> chat(@RequestBody Inquiry inquiry);
 
     @PostMapping(value = "/refactor")
     ResponseEntity<GitResponse> refactor(@RequestBody GitRequest request);

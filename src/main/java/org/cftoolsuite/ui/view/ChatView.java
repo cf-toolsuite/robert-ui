@@ -1,135 +1,145 @@
 package org.cftoolsuite.ui.view;
 
-import org.cftoolsuite.client.ModeClient;
-import org.cftoolsuite.client.RefactorClient;
-import org.cftoolsuite.ui.MainLayout;
-import org.cftoolsuite.ui.component.Markdown;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
-
 import com.vaadin.flow.component.Key;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.H4;
-import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.progressbar.ProgressBar;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import org.apache.commons.collections4.CollectionUtils;
+import org.cftoolsuite.client.ModeClient;
+import org.cftoolsuite.client.RefactorStreamingClient;
+import org.cftoolsuite.domain.chat.FilterMetadata;
+import org.cftoolsuite.domain.chat.Inquiry;
+import org.cftoolsuite.ui.MainLayout;
+import org.cftoolsuite.ui.component.Markdown;
+import org.cftoolsuite.ui.component.MetadataFilter;
+
+import java.util.List;
 
 @PageTitle("robert-ui » Chat")
 @Route(value = "chat", layout = MainLayout.class)
-public class ChatView extends BaseView  {
+public class ChatView extends BaseStreamingView {
 
-    private static final Logger log = LoggerFactory.getLogger(ChatView.class);
-
-    private Div messageList;
-    private TextField messageInput;
-    private Button sendButton;
+    private TextField question;
+    private MetadataFilter metadataFilter;
+    private Button submitButton;
     private Button clearButton;
     private HorizontalLayout buttons;
-    private ProgressBar typingIndicator;
+    private Markdown chatHistory;
 
-    public ChatView(RefactorClient refactorClient, ModeClient modeClient) {
-        super(refactorClient, modeClient);
+    public ChatView(RefactorStreamingClient refactorStreamingClient, ModeClient modeClient) {
+        super(refactorStreamingClient, modeClient);
     }
 
     @Override
     protected void setupUI() {
+        var ui = UI.getCurrent();
         setSizeFull();
-        setPadding(true);
-        setSpacing(true);
 
-        messageList = new Div();
-        messageList.setClassName("message-list");
-        messageList.getStyle().set("overflow-y", "auto");
-        messageList.setHeight("95%");
+        // Create chat history container
+        VerticalLayout chatHistoryContainer = new VerticalLayout();
+        chatHistoryContainer.setSizeFull();
+        chatHistoryContainer.setPadding(false);
+        chatHistoryContainer.setSpacing(false);
 
-        typingIndicator = new ProgressBar();
-        typingIndicator.setIndeterminate(true);
-        typingIndicator.setVisible(false);
+        // Add Markdown with styling
+        chatHistory = new Markdown();
+        chatHistory.getElement().getStyle()
+                .set("height", "100%")
+                .set("width", "100%")
+                .set("overflow", "auto");
 
-        messageInput = new TextField();
-        messageInput.setPlaceholder("Type a message...");
-        messageInput.setWidth("100%");
+        chatHistoryContainer.add(chatHistory);
+        chatHistoryContainer.setFlexGrow(1, chatHistory);
 
+        // Create input components
+        question = new TextField();
+        question.setPlaceholder("Type a question...");
+        question.setWidth("100%");
+
+        metadataFilter = new MetadataFilter();
+        metadataFilter.setWidth("100%");
+        metadataFilter.setLabel("Metadata Filters");
+
+        // Create buttons
         this.buttons = new HorizontalLayout();
-        sendButton = new Button("Send");
-        sendButton.addClickListener(e -> submitRequest());
-        sendButton.addClickShortcut(Key.ENTER);
+        submitButton = new Button("Submit");
+        submitButton.addClickListener(e -> {
+            // Prepare the question and metadata message
+            String inquiry = formatQuestion(
+                    question.getValue(),
+                    metadataFilter.getValue()
+            );
+
+            // Clear previous content and append question message
+            chatHistory.clear();
+            chatHistory.appendMarkdown(inquiry);
+
+            // Stream the response
+            refactorStreamingClient
+                    .streamResponseToQuestion(new Inquiry(question.getValue(), metadataFilter.getValue()))
+                    .subscribe(ui.accessLater(response -> {
+                        chatHistory.appendMarkdown("\n\n" + response);
+                    }, null));
+        });
+        submitButton.addClickShortcut(Key.ENTER);
 
         this.clearButton = new Button("Clear");
         clearButton.addClickListener(e -> clearAllFields());
-        buttons.add(sendButton, clearButton);
+        buttons.add(submitButton, clearButton);
 
-        messageInput.addValueChangeListener(event -> {
-            if (event.getValue().isEmpty()) {
-                hideThinkingIndicator();
-            }
-        });
-
-        add(new H2("Chat"));
-
-        VerticalLayout inputLayout = new VerticalLayout(typingIndicator, messageInput, buttons);
+        // Create input layout with bottom-anchoring
+        VerticalLayout inputLayout = new VerticalLayout(question, metadataFilter, buttons);
         inputLayout.setSpacing(false);
         inputLayout.setPadding(false);
+        inputLayout.setWidth("100%");
 
-        add(messageList, inputLayout);
+        // Create a wrapper layout to control height distribution
+        VerticalLayout mainLayout = new VerticalLayout();
+        mainLayout.setSizeFull();
+        mainLayout.setPadding(false);
+        mainLayout.setSpacing(false);
+
+        // Add header
+        H2 header = new H2("Chat");
+        mainLayout.add(header);
+
+        // Add chat history with expand ratio
+        mainLayout.add(chatHistoryContainer);
+        mainLayout.setFlexGrow(2, chatHistoryContainer); // This gives chatHistory 2/3 of the space
+
+        // Add input layout at the bottom
+        mainLayout.add(inputLayout);
+        mainLayout.setFlexGrow(0, inputLayout); // This prevents input layout from expanding
+
+        // Replace the direct add with adding the main layout
+        add(mainLayout);
     }
 
-    @Override
-    protected void submitRequest() {
-        String message = messageInput.getValue();
-        if (!message.isEmpty()) {
-            addMessageToList("You:", message);
-            messageInput.clear();
-            getAiBotResponse(message);
+    private String formatQuestion(String question, List<FilterMetadata> metadata) {
+        StringBuilder messageBuilder = new StringBuilder();
+        messageBuilder.append("**").append(question).append("**").append("\n\n");
+        if (CollectionUtils.isNotEmpty(metadata)) {
+            messageBuilder.append("Filtered by: { ");
+            metadata.forEach(fm ->
+                    messageBuilder.append(fm.key())
+                            .append(": ").append(fm.value()).append(" | ")
+            );
+            messageBuilder.append(" }");
         }
+        String formattedQuestion = messageBuilder.toString();
+        if (formattedQuestion.endsWith("|  }")) formattedQuestion = formattedQuestion.replaceAll("\\|\\s*}", "}");
+        return formattedQuestion;
     }
 
     @Override
     protected void clearAllFields() {
-        messageInput.clear();
-        messageList.removeAll();
-    }
-
-    private void addMessageToList(String title, String message) {
-        H4 whom = new H4(title);
-        Markdown messageDiv = new Markdown(message);
-        messageList.add(whom, messageDiv);
-    }
-
-    private void showThinkingIndicator() {
-        typingIndicator.setVisible(true);
-    }
-
-    private void hideThinkingIndicator() {
-        typingIndicator.setVisible(false);
-    }
-
-    private void getAiBotResponse(String message) {
-        showThinkingIndicator();
-        try {
-            ResponseEntity<String> response = refactorClient.chat(message);
-            if (response.getStatusCode().is2xxSuccessful()) {
-                addMessageToList("AI ChatBot:", response.getBody());
-            } else {
-                String errorMessage = "Error submitting chat request. Status code: " + response.getStatusCode();
-                if (response.getBody() != null) {
-                    errorMessage += ". Message: " + response.getBody().toString();
-                }
-                showNotification(errorMessage, NotificationVariant.LUMO_ERROR);
-            }
-            hideThinkingIndicator();
-        } catch (Exception e) {
-            String errorMessage = "An unexpected error occurred: " + e.getMessage();
-            hideThinkingIndicator();
-            showNotification(errorMessage, NotificationVariant.LUMO_ERROR);
-            log.error("An unexpected error occurred", e);
-        }
+        question.clear();
+        chatHistory.clear();
+        metadataFilter.clear();
     }
 }
