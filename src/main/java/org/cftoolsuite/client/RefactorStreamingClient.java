@@ -9,7 +9,7 @@ import reactor.core.publisher.Flux;
 @ReactiveFeignClient(name="refactor-streaming-service", url="${refactor.service.url}")
 public interface RefactorStreamingClient {
 
-    @PostMapping("/api/stream/chat")
+    @PostMapping("/stream/chat")
     public Flux<String> streamResponseToQuestion(@RequestBody Inquiry inquiry);
 }
 

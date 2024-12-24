@@ -22,7 +22,7 @@ public interface RefactorClient {
     @PostMapping(value = "/ingest")
     ResponseEntity<Void> ingest(@RequestBody IngestRequest request);
 
-    @PostMapping("/api/chat")
+    @PostMapping("/chat")
     public ResponseEntity<String> chat(@RequestBody Inquiry inquiry);
 
     @PostMapping(value = "/refactor")

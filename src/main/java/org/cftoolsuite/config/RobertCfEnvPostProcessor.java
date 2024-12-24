@@ -18,10 +18,7 @@ public class RobertCfEnvPostProcessor implements CfEnvProcessor {
 
 	@Override
 	public void process(CfCredentials cfCredentials, Map<String, Object> properties) {
-		Map<String, Object> allCredentials = cfCredentials.getMap();
-		for (Map.Entry<String, Object> entry : allCredentials.entrySet()) {
-			properties.put(entry.getKey(), entry.getValue());
-		}
+        properties.putAll(cfCredentials.getMap());
 	}
 
 	@Override
