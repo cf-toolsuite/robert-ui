@@ -81,7 +81,13 @@ performWorkUntilDeadline@http://localhost:8081/VAADIN/build/indexhtml-CKE7iEAW.j
 
 Stop the application.
 
-Edit `package.json`.  
+Execute
+
+```bash
+gradle vaadinClean
+```
+
+Edit `package.json`.
 
 Set the versions of the `npm` dependencies to be equal to the version of `com.vaadin` plugin as defined in `build.gradle`.
 
@@ -89,7 +95,7 @@ E.g., You see lines like this:
 
 ```node
 "@vaadin/hilla-lit-form": "^24.4.19", 
-"@vaadin/hilla-react-signals": "^24.4.19",
+"@vaadin/hilla-react-signals": "^24.4.19"
 ```
 
 in your `package.json`.
@@ -100,10 +106,14 @@ Set the `npm` dependencies to be
 
 ```
 "@vaadin/hilla-lit-form": "^24.6.0", 
-"@vaadin/hilla-react-signals": "^24.6.0",
+"@vaadin/hilla-react-signals": "^24.6.0"
 ```
 
-then execute `gradle clean build bootRun -Dspring.profiles.active=default,local`.
+then execute
+
+```bash
+gradle clean build bootRun -Dspring.profiles.active=default,local`
+```
 
 ## How to run on Tanzu Platform for Cloud Foundry
 
